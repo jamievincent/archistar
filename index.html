@@ -25,8 +25,20 @@
 			//creates the box geometry
 			var geometry = new THREE.BoxGeometry( 2, 2, 2 );
 
+			//changes colours of each side of the cube
+			var cubeMaterials = 
+			[
+				new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide } ),
+				new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide } ),
+				new THREE.MeshBasicMaterial( {color: 0xA1FF96, side: THREE.DoubleSide } ),
+				new THREE.MeshBasicMaterial( {color: 0xCCFFFD, side: THREE.DoubleSide } ),
+				new THREE.MeshBasicMaterial( {color: 0xCDCCFF, side: THREE.DoubleSide } ),
+				new THREE.MeshBasicMaterial( {color: 0xFFCCE7, side: THREE.DoubleSide } ),
+
+			];
+
 			//creates the material
-			var material = new THREE.MeshBasicMaterial( { color: 'blueviolet' } );
+			var material = new THREE.MeshFaceMaterial(cubeMaterials); 
 
 			//applies the material to the geometry
 			var cube = new THREE.Mesh( geometry, material );
