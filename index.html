@@ -3,63 +3,180 @@
 		<title>Archistar</title>
 		<style>
 			body { margin: 0; }
-			canvas { width: 100%; height: 100% }
+			canvas { width: 100%; height: 100%; background: red}
 		</style>
 	</head>
 	<body>
 
 		<script src="js/three.js"></script> 
-		<script src= "js/OrbitControls.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		
+		<script src="js/ObjLoader.js"></script>
+		<script src="js/MTLLoader.js"></script>
+		<script src="js/GLTFLoader.js"></script>
+		<script src="mass.js"></script>
+		
+
+		<canvas id = 'myCanvas'> </canvas>
 		<script>
-			//creates scene
-			var scene = new THREE.Scene();
 
-			//creates camera perspective with field of view, aspect ratio, near and far
-			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+			var renderer,
+				scene,
+				camera,
+				myCanvas = document.getElementById('myCanvas');
 
-			//creates the render instance and size
-			var renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
+			//RENDERER
+			renderer = new THREE.WebGLRenderer({canvas: myCanvas, antialias: true});
+			renderer.setClearColor(0x000000);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			//document.body.appendChild( renderer.domElement );
 
-			//creates the box geometry
-			var geometry = new THREE.BoxGeometry( 2, 2, 2 );
 
-			//changes colours of each side of the cube
-			var cubeMaterials = 
-			[
-				new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide } ),
-				new THREE.MeshBasicMaterial( {color: 'white', side: THREE.DoubleSide } ),
-				new THREE.MeshBasicMaterial( {color: 0xA1FF96, side: THREE.DoubleSide } ),
-				new THREE.MeshBasicMaterial( {color: 0xCCFFFD, side: THREE.DoubleSide } ),
-				new THREE.MeshBasicMaterial( {color: 0xCDCCFF, side: THREE.DoubleSide } ),
-				new THREE.MeshBasicMaterial( {color: 0xFFCCE7, side: THREE.DoubleSide } ),
+			//SCENE
+			scene = new THREE.Scene();
 
+			//CAMERA
+			camera = new THREE.PerspectiveCamera( 35, window.innerWidth/window.innerHeight, 300, 10000 );
+			camera.position.z = 300;
+
+			//LIGHTS
+
+			var light = new THREE.AmbientLight(0xFFFFFF, 0.5);
+			scene.add(light);
+
+			var light2 = new THREE.PointLight(0xFFFFFF, 0.5);
+			scene.add(light2);
+
+			//MODEL
+
+			var loader = new THREE.GLTFLoader();
+
+			loader.load( 'mass.js', handle_load (building));
+
+			function handle_load(height, width, depth) {
+				var geometry = new THREE.BoxGeometry(width, height, depth);
+			}
+
+
+
+
+		   /* var loader = new THREE.OBJLoader();
+
+		    var mtlLoader = new THREE.MTLLoader();
+
+		    mtlLoader.load( "mass.js", function( materials ) {
+		        materials.preload();
+		        var objLoader = new THREE.OBJLoader();
+		        objLoader.setMaterials( materials );
+		        objLoader.load('mass.js', function ( object ) {
+		            object.rotation.set(-Math.PI/2,0,0);
+		            console.log(object.children[0])
+		            scene.add( object );
+		        });
+		    },
+		    function ( xhr ) {
+		        console.log( 'OBJ ' + ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+		    },
+		    function ( error ) {
+		        console.log(error);
+		    }); */
+
+			
+			//MATERIAL
+
+			/*var material1 = new THREE.MeshBasicMaterial({
+
+				color: 0xFFFFFF,
+				//transparent: true,
+				//opacity: 0.5,
+				wireframe: false
+				map: new THREE.TextureLoader().load('IMAGE NAME')  //adds texture
+				emissive: 0xFFFFFF  //adds a glow 
+
+			}); 
+
+			var material1 = [
+				new THREE.MeshLambertMaterial( {color: 'white', emissive: 'white', side: THREE.DoubleSide } ),
+				new THREE.MeshLambertMaterial( {color: 'white', emissive: 'white', side: THREE.DoubleSide } ),
+				new THREE.MeshLambertMaterial( {color: 0xA1FF96, side: THREE.DoubleSide } ),
+				new THREE.MeshLambertMaterial( {color: 0xCCFFFD, side: THREE.DoubleSide } ),
+				new THREE.MeshLambertMaterial( {color: 0xCDCCFF, side: THREE.DoubleSide } ),
+				new THREE.MeshLambertMaterial( {color: 0xFFCCE7, side: THREE.DoubleSide } ),
 			];
 
-			//creates the material
-			var material = new THREE.MeshFaceMaterial(cubeMaterials); 
+			var material2 = new THREE.MeshBasicMaterial({
+				color: 0xFF8FFF,
+				transparent: true,
+				opacity: 1,
+				wireframe: true,
+				wireframeLinewidth: 800,
+				//spectular: 0x007000,
+				//shininess: 50
+				//map: new THREE.TextureLoader().load('wool.jpeg'),
+				//normalMap: new THREE.TextureLoader().load('wool.jpeg')
+			});
+			
+			var material3 = new THREE.MeshBasicMaterial({
+				color: 'limegreen',
+				wireframe: false
+			})
+			
+			
+			//GEOMETRY
 
-			//applies the material to the geometry
-			var cube = new THREE.Mesh( geometry, material );
-			scene.add( cube );
+			var geometry1 = new THREE.BoxGeometry(50,50,50);
+			var mesh = new THREE.Mesh(geometry1, material1);
+			mesh.position.z = -1000;
+			mesh.position.x = -100;
+			scene.add(mesh);
 
-			//creates the camera position
-			camera.position.z = 5;
+			var geometry2 = new THREE.SphereGeometry(100);
+			var mesh2 = new THREE.Mesh(geometry2, material2);
+			mesh2.position.z = -1000;
+			mesh2.position.x = 100;
+			scene. add(mesh2);
+
+			var geometry3 = new THREE.PlaneGeometry(10000,1000,100,100);
+			var mesh3 = new THREE.Mesh(geometry3, material3);
+			mesh3.rotation.x = -90 * Math.PI / 180;
+			mesh3.position.y = -100;
+			scene.add(mesh3); 
+
+
 
 			controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 			//animate function
+
+			/* render();
+
+			function render() {
+
+				mesh.rotation.x += 0.01;
+				mesh.rotation.y += 0.01;
+
+				renderer.render(scene, camera);
+
+				requestAnimationFrame(render);
+			} 
+			
 			var animate = function () {
 				requestAnimationFrame( animate );
 
-				cube.rotation.x += 0.02;
-				cube.rotation.y += 0.02;
+				mesh.rotation.x += 0.02;
+				mesh.rotation.y += 0.03;
 
-				renderer.render( scene, camera );
+				mesh2.rotation.x += 0.02;
+				mesh2.rotation.y += 0.01;
+
+
+				//moves camera position
+				//camera.position.z += 1;
+
+				renderer.render( scene, camera ); 
 			};
 
-			animate();
+			animate(); */
 		</script>
 	</body>
 </html>

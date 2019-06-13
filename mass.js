@@ -1,0 +1,1 @@
+building ={"type":"FeatureCollection","features":[{"type":"Feature","geometry":{ "type": "Polygon","coordinates": [[[0.00131,0],[0,0],[0,0.00093],[0.00131,0.00093],[0.00131,0]]]},"properties":{"height":90,"width":131,"depth":93}}]}
